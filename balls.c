@@ -55,7 +55,6 @@ GLvoid MouseMove(int x, int y);
 GLvoid ProcessKeys(unsigned char key, int x, int y);
 GLvoid AddBall(GLfloat x, GLfloat y, GLfloat r);
 GLvoid AddRandBall();
-GLvoid ObjectCollision(int ballIndex);
 int CheckHeightCollision(Ball ball);
 int CheckWidthCollision(Ball ball);
 
@@ -218,15 +217,12 @@ GLvoid DrawGLScene() {
          }
          
          if (CheckHeightCollision(balls[i]) == 1) {
-            //balls[i].y = HEIGHT-balls[i].r;
             balls[i].velY *= -1*balls[i].elasticity;
          }
          
          if (CheckWidthCollision(balls[i]) == 1) {
-            //balls[i].y = HEIGHT-balls[i].r;
             balls[i].velX *= -1*balls[i].elasticity;
          }
-         ObjectCollision(i);
          balls[i].x += balls[i].velX*deltaTime;
          balls[i].y += balls[i].velY*deltaTime;
          
@@ -256,59 +252,6 @@ GLvoid DrawBall(Ball ball) {
 }
 
 GLvoid ReSizeGLScene(int w, int h) {
-}
-
-GLvoid ObjectCollision(int bIndex) {
-   // get distances between the balls components
-   Color red; red.r=1; red.g=0; red.b=0;
-   Color green; green.r=0; green.g=1; green.b=0;
-   Color white; white.r=1; white.g=1; white.b=1;
-   int i;
-   for (i=0; i<MAX_BALLS; i++) {
-      if (balls[i].enabled == 1 && i != bIndex) {
-         float xDist = balls[i].x - balls[bIndex].x;
-         float yDist = balls[i].y - balls[bIndex].y;
-         float dist = sqrt(xDist*xDist + yDist*yDist);
-         
-         // Collision
-         if (dist < balls[i].r + balls[bIndex].r){
-            float theta  = atan2(yDist, xDist);
-                        float sine = sin(theta);
-                        float cosine = cos(theta);
-                        
-                        float tempiX = cosine * xDist + sine * yDist;
-                        float tempiY = cosine * yDist - sine * xDist;
-                        float tempbVelX = cosine * balls[bIndex].velX + sine * balls[bIndex].velY;
-                        float tempbVelY = cosine * balls[bIndex].velY - sine * balls[bIndex].velX;
-                        float tempiVelX = cosine * balls[i].velX + sine * balls[i].velY;
-                        float tempiVelY = cosine * balls[i].velY - sine * balls[i].velX;
-                        // Conservation of momentum
-                        float finalbVelX = ((balls[bIndex].r - balls[i].r) * tempbVelX + 2 * balls[i].r * tempiVelX) / (balls[bIndex].r + balls[i].r);      
-                        float finalbVelY = tempbVelY;
-                        float finaliVelX = ((balls[i].r - balls[bIndex].r) * tempiVelX + 2 * balls[bIndex].r * tempbVelX) / (balls[bIndex].r + balls[i].r);
-                        float finaliVelY = tempiVelY;
-                        
-                        balls[bIndex].x += tempbVelX;
-                        //balls[i].x += tempiVelX;
-                        
-                        Ball finaliBall;
-                        finaliBall.x = cosine * tempiX - sine * tempiY;
-                        finaliBall.y = cosine * tempiY + sine * tempiX;
-                        
-                        // update balls to screen position
-                        // balls[i].x = balls[bIndex].x + finaliBall.x;
-                        // balls[i].y = balls[bIndex].y + finaliBall.y;
-                        
-                        balls[bIndex].velX = cosine * finalbVelX - sine * finalbVelY;
-                        balls[bIndex].velY = cosine * finalbVelY + sine * finalbVelX;
-                        // balls[i].velX = cosine * finaliVelX - sine * finaliVelY;
-                        // balls[i].velY = cosine * finaliVelY + sine * finaliVelX;
-                        // balls[i].velY *= -1;
-         } else {
-            //balls[bIndex].col = white;
-         }
-      }
-   }
 }
 
 int CheckHeightCollision(Ball ball) {

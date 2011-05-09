@@ -1,4 +1,11 @@
+LIBS = -lglut -lGL -lGLU -lGLEW
+PLATFORM = LINUX
+
+ifeq ($(PLATFORM), "x")
+   LIBS = -framework OpenGl -framework GLUT
+endif
+
 all:
-	gcc balls.c -o balls -framework OpenGL -framework GLUT
+	gcc balls.c $(LIBS) -o balls
 clean:
 	rm -rf *o balls
