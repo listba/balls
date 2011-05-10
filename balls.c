@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
 #ifdef __APPLE__
    #include <OpenGL/gl.h>
    #include <OpenGL/glu.h>
@@ -12,13 +13,13 @@
    #include <GL/glu.h>
    #include <GL/glut.h>
 #endif
-#include <unistd.h>
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
 const int MAX_BALLS = 1000;
+const int START_BALLS = 100;
 const GLfloat ACCELERATION = 0.004;
-const GLfloat SMOOTHNESS = 1.0; // lower = more smooth balls
+const GLfloat SMOOTHNESS = 1; // lower = more smooth balls
 
 typedef struct {
    GLfloat r;
@@ -55,16 +56,14 @@ GLvoid MouseMove(int x, int y);
 GLvoid ProcessKeys(unsigned char key, int x, int y);
 GLvoid AddBall(GLfloat x, GLfloat y, GLfloat r);
 GLvoid AddRandBall();
+GLvoid InitBalls();
 int CheckHeightCollision(Ball ball);
 int CheckWidthCollision(Ball ball);
 
 int main(int argc, char **argv, char **envp) {
    balls = malloc(sizeof(Ball)*MAX_BALLS);
-   int i=0;
-   for (i=0; i<MAX_BALLS; i++) {
-      balls[i].enabled = 0;
-   }
    srand ( time(NULL) );
+   InitBalls();
    glutInit(&argc, argv);
    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
    glutInitWindowSize (WIDTH, HEIGHT);
@@ -103,10 +102,7 @@ GLvoid ProcessKeys(unsigned char key, int x, int y) {
          else wireframe = 0;
          break;
       case 'r':
-         for (i=0; i<MAX_BALLS; i++) {
-            balls[i].enabled = 0;
-         }
-         numBalls = 0;
+         InitBalls(); 
          break;
       case 'g':
          if(gravity == 0) gravity = 1;
@@ -122,6 +118,17 @@ GLvoid MouseClick(int button, int state, int x, int y) {
       } else {
          rightDown = 0;
       }
+   }
+}
+
+GLvoid InitBalls() {
+   numBalls = 0;
+   int i;
+   for (i=0; i<MAX_BALLS; i++) {
+      balls[i].enabled = 0;
+   }
+   for (i=0; i<START_BALLS; i++) {
+      AddRandBall();
    }
 }
 
