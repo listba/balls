@@ -1,4 +1,4 @@
-LIBS = -lglut -lGL -lGLU -lGLEW
+LIBS = -lglut -lGLU -lGLEW
 PLATFORM = LINUX
 
 ifeq ($(PLATFORM), "x")
