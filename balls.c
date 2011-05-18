@@ -121,7 +121,8 @@ Ball CreateBall(GLfloat x, GLfloat y, GLfloat r) {
    newBall.velX = 0.0;
    newBall.velY = 0.0;
    newBall.enabled = 1;
-   newBall.elasticity = rand()%7/10.0 + 0.3;
+   //newBall.elasticity = rand()%7/10.0 + 0.3;
+   newBall.elasticity = 0.5;
    return newBall;
 }
 
@@ -133,8 +134,8 @@ GLvoid AddRandBall() {
    Ball newBall;
    while(alreadyThere==1) {
       alreadyThere = 0;
-      radius = rand()%10+5;
-      
+      //radius = rand()%20+5;
+      radius = 15;
       startX = rand()%(width-radius*2) + radius;
       startY = rand()%(height-radius*2) + radius;
       newBall = CreateBall(startX, startY, radius);
@@ -144,6 +145,7 @@ GLvoid AddRandBall() {
             // collision
             if (CheckBallCollision(balls[i], newBall) == 1) {
                alreadyThere = 1; 
+               break;
             }
          }
       }
@@ -197,11 +199,32 @@ GLvoid DrawGLScene() {
          if (collision == 1) {
             int a;
             for (a=0; a<MAX_BALLS; a++) {
-               if (CheckBallCollision(balls[a], balls[i]) && a != i) {
-                  balls[i].velX = 0;
-                  balls[i].velY = 0;
-                  
-                  break;
+               if (CheckBallCollision(balls[a], balls[i]) && a != i && balls[a].enabled==1) {
+                  balls[i].x -= balls[i].velX*deltaTime;
+                  balls[i].y -= balls[i].velY*deltaTime;
+                  balls[a].x -= balls[a].velX*deltaTime;
+                  balls[a].y -= balls[a].velY*deltaTime;
+
+                  float dx = balls[i].x - balls[a].x;
+                  float dy = balls[i].y - balls[a].y;
+                  float angle = atan(dx/dy);
+                  float u1 = sqrt(pow(balls[i].velX,2) + pow(balls[i].velY,2));
+                  float u2 = sqrt(pow(balls[a].velX,2) + pow(balls[a].velY,2));
+                  float m1 = balls[i].r;
+                  float m2 = balls[a].r;
+                  // Conservation of momentum
+                  float newU1 = ((m1-m2) / (m1+m2))*u1 + ((2*m2)/(m1+m2))*u2;
+                  float newU2 = ((m2-m1) / (m1+m2))*u2 + ((2*m1)/(m1+m2))*u1;
+                  balls[i].velX = u1*-1*cos(angle);
+                  balls[i].velY = u1*-1*sin(angle);
+
+                  balls[a].velX = u2*cos(angle);
+                  balls[a].velY = u2*sin(angle);
+                  balls[i].x += balls[i].velX*deltaTime;
+                  balls[i].y += balls[i].velY*deltaTime;
+                  balls[a].x += balls[a].velX*deltaTime;
+                  balls[a].y += balls[a].velY*deltaTime;
+                  //break;
                }
             }
          }

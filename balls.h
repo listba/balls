@@ -1,9 +1,9 @@
 const int START_WIDTH = 800;
 const int START_HEIGHT = 600;
 const int MAX_BALLS = 1000;
-const int START_BALLS = 100;
-const GLfloat ACCELERATION = 0.004;
-const GLfloat SMOOTHNESS = 1; // lower = more smooth balls
+const int START_BALLS = 25;
+const GLfloat ACCELERATION = 0.002;
+const GLfloat SMOOTHNESS = 1.5; // lower = more smooth balls
 
 typedef struct {
    GLfloat r;
