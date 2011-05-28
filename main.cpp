@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
    glutInitWindowPosition (centerX, centerY);
    glutCreateWindow ("Balls");
    InitGL();
-   InitBalls(30,2,5);
+   InitBalls(15,5,10);
    glutKeyboardFunc(ProcessKeys);
    glutDisplayFunc(DrawGLScene);
    glutReshapeFunc(Reshape);
