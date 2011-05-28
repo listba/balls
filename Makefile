@@ -6,6 +6,6 @@ ifeq ($(PLATFORM), "x")
 endif
 
 all:
-	gcc balls.c $(LIBS) -o balls
+	g++ main.cpp $(LIBS) -o balls -std=c++0x
 clean:
 	rm -rf *o balls
